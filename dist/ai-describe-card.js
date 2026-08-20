@@ -42,15 +42,21 @@ class AiDescribeCard extends HTMLElement {
 
     try {
       var result = await Promise.race([
-        this._hass.callService('ai_task', 'generate_data', {
-          task_name: 'ai_describe',
-          entity_id: c.ai_entity,
-          instructions: c.prompt,
-          attachments: [{
-            media_content_id: mediaId,
-            media_content_type: 'image/jpeg'
-          }]
-        }, undefined, true),
+        this._hass.connection.sendMessagePromise({
+          type: 'call_service',
+          domain: 'ai_task',
+          service: 'generate_data',
+          service_data: {
+            task_name: 'ai_describe',
+            entity_id: c.ai_entity,
+            instructions: c.prompt,
+            attachments: [{
+              media_content_id: mediaId,
+              media_content_type: 'image/jpeg'
+            }]
+          },
+          return_response: true
+        }),
         timeout
       ]);
 
