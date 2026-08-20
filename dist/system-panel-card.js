@@ -78,7 +78,7 @@ class SystemPanelCard extends HTMLElement {
           width: 48px;
           height: 48px;
           border-radius: 50%;
-          background: rgba(255, 255, 255, 0.05);
+          background: rgba(var(--rgb-primary-text-color, 255, 255, 255), 0.05);
         }
         .main-icon ha-icon { --mdc-icon-size: 28px; }
         .badge {
@@ -122,7 +122,7 @@ class SystemPanelCard extends HTMLElement {
           font-size: 0.85em;
           font-family: inherit;
         }
-        .act-btn:hover { background: rgba(255, 255, 255, 0.05); }
+        .act-btn:hover { background: rgba(var(--rgb-primary-text-color, 255, 255, 255), 0.05); }
         .act-btn ha-icon { --mdc-icon-size: 16px; }
         .stats-toggle {
           display: flex;
@@ -131,11 +131,11 @@ class SystemPanelCard extends HTMLElement {
           padding: 8px 16px;
           cursor: pointer;
           user-select: none;
-          border-top: 1px solid rgba(255, 255, 255, 0.05);
+          border-top: 1px solid var(--divider-color, rgba(255, 255, 255, 0.05));
           color: var(--secondary-text-color);
           font-size: 0.9em;
         }
-        .stats-toggle:hover { background: rgba(255, 255, 255, 0.03); }
+        .stats-toggle:hover { background: rgba(var(--rgb-primary-text-color, 255, 255, 255), 0.03); }
         .chevron {
           --mdc-icon-size: 18px;
           transition: transform 0.2s;
@@ -246,6 +246,15 @@ class SystemPanelCard extends HTMLElement {
       this._el.chevron.classList.add('open');
       this._el.statsBody.classList.add('open');
     }
+
+    this._uptimeInterval = setInterval(() => this._update(), 60000);
+  }
+
+  disconnectedCallback() {
+    if (this._uptimeInterval) {
+      clearInterval(this._uptimeInterval);
+      this._uptimeInterval = null;
+    }
   }
 
   _update() {
@@ -286,7 +295,7 @@ class SystemPanelCard extends HTMLElement {
   getCardSize() { return 3; }
 }
 
-customElements.define('system-panel-card', SystemPanelCard);
+if (!customElements.get('system-panel-card')) customElements.define('system-panel-card', SystemPanelCard);
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: 'system-panel-card',
